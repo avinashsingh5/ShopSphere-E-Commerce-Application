@@ -1,0 +1,104 @@
+name: ShopSphere
+
+services:
+  discovery-service:
+    build:
+      context: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+
+  config-server:
+    build:
+      context: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - discovery-service
+    environment:
+      SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - discovery-service
+      - config-server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+
+  catalog-service:
+    build:
+      context: ./catalog-service
+    container_name: catalog-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - discovery-service
+      - config-server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+
+  order-service:
+    build:
+      context: ./order-service
+    container_name: order-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - discovery-service
+      - config-server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+
+  admin-service:
+    build:
+      context: ./admin-service
+    container_name: admin-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - discovery-service
+      - config-server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-service
+      - config-server
+      - auth-service
+      - catalog-service
+      - order-service
+      - admin-service
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
