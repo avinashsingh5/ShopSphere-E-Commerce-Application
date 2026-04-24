@@ -14,6 +14,36 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidRequestException(InvalidRequestException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<Map<String, Object>> handleInsufficientStockException(InsufficientStockException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(PriceChangedException.class)
+    public ResponseEntity<Map<String, Object>> handlePriceChangedException(PriceChangedException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(UnauthorizedActionException.class)
+    public ResponseEntity<Map<String, Object>> handleUnauthorizedActionException(UnauthorizedActionException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler(ServiceCommunicationException.class)
+    public ResponseEntity<Map<String, Object>> handleServiceCommunicationException(ServiceCommunicationException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_GATEWAY, request);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
         return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
@@ -30,21 +60,20 @@ public class GlobalExceptionHandler {
         errorDetails.put("timestamp", LocalDateTime.now());
         errorDetails.put("status", HttpStatus.BAD_REQUEST.value());
         errorDetails.put("error", "Validation Failed");
-        
+
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage()));
-        
+
         errorDetails.put("message", errors);
         errorDetails.put("path", request.getDescription(false).replace("uri=", ""));
-        
+
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex, WebRequest request) {
-        // Treating generic runtime exceptions as bad requests for business logic validation errors
-        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+        return buildErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     @ExceptionHandler(Exception.class)

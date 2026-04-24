@@ -57,7 +57,7 @@ class CatalogControllerTest {
 
     @Test
     void getProducts_ShouldReturn200() throws Exception {
-        Page<ProductResponse> page = new PageImpl<>(List.of(sampleProduct()));
+        Page<ProductResponse> page = new PageImpl<>(List.of(sampleProduct()), org.springframework.data.domain.PageRequest.of(0, 10), 1);
         when(productService.getProducts(any(), any(), anyInt(), anyInt(), anyString(), anyString()))
                 .thenReturn(page);
 

@@ -19,6 +19,9 @@ public class SecurityConfig {
         @Autowired
         private RoleHeaderFilter roleHeaderFilter;
 
+        @Autowired
+        private ServiceTokenFilter serviceTokenFilter;
+
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
@@ -41,6 +44,9 @@ public class SecurityConfig {
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                // ServiceTokenFilter runs first — authenticates internal service calls
+                                .addFilterBefore(serviceTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                                // RoleHeaderFilter runs after — authenticates user calls forwarded by API Gateway
                                 .addFilterBefore(roleHeaderFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();

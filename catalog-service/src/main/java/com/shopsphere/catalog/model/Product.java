@@ -37,6 +37,6 @@ public class Product {
     private boolean featured;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 }

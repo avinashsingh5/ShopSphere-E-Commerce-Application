@@ -1,5 +1,6 @@
 package com.shopsphere.catalog.service;
 
+import com.shopsphere.catalog.exception.ResourceNotFoundException;
 import com.shopsphere.catalog.model.Category;
 import com.shopsphere.catalog.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,12 @@ public class CategoryService {
 
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
     }
 
     public Category createCategory(Category category) {
         if (categoryRepository.existsByName(category.getName())) {
-            throw new RuntimeException("Category already exists: " + category.getName());
+            throw new ResourceNotFoundException("Category already exists: " + category.getName());
         }
         return categoryRepository.save(category);
     }
@@ -38,7 +39,7 @@ public class CategoryService {
 
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Category not found with id: " + id);
+            throw new ResourceNotFoundException("Category not found with id: " + id);
         }
         categoryRepository.deleteById(id);
     }
