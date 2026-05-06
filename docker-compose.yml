@@ -7,6 +7,7 @@ services:
     container_name: discovery-service
     ports:
       - "8761:8761"
+    restart: unless-stopped
 
   config-server:
     build:
@@ -18,6 +19,7 @@ services:
       - discovery-service
     environment:
       SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+    restart: unless-stopped
 
   auth-service:
     build:
@@ -34,6 +36,7 @@ services:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_PROFILES_ACTIVE: docker
       SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+    restart: unless-stopped
 
   catalog-service:
     build:
@@ -50,6 +53,7 @@ services:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_PROFILES_ACTIVE: docker
       SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+    restart: unless-stopped
 
   order-service:
     build:
@@ -66,6 +70,7 @@ services:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_PROFILES_ACTIVE: docker
       SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+    restart: unless-stopped
 
   admin-service:
     build:
@@ -82,6 +87,7 @@ services:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_PROFILES_ACTIVE: docker
       SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+    restart: unless-stopped
 
   api-gateway:
     build:
@@ -102,3 +108,4 @@ services:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_PROFILES_ACTIVE: docker
       SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://discovery-service:8761/eureka/"}}}}'
+    restart: unless-stopped

@@ -1,0 +1,129 @@
+<div class="admin-page">
+  <div class="admin-inner">
+    <div class="admin-header">
+      <div>
+        <span class="admin-label">ADMIN PANEL</span>
+        <h1 class="admin-title">Products</h1>
+      </div>
+      <nav class="admin-nav">
+        <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/admin/products" routerLinkActive="active">Products</a>
+        <a routerLink="/admin/categories" routerLinkActive="active">Categories</a>
+        <a routerLink="/admin/orders" routerLinkActive="active">Orders</a>
+        <a routerLink="/admin/reports" routerLinkActive="active">Reports</a>
+      </nav>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn-add" (click)="openAddModal()" id="add-product-btn">
+        <i class="bi bi-plus"></i> ADD PRODUCT
+      </button>
+    </div>
+
+    <div class="success-toast" *ngIf="successMessage">
+      <i class="bi bi-check-circle"></i> {{ successMessage }}
+    </div>
+
+    <app-loading-spinner [show]="loading"></app-loading-spinner>
+
+    <div class="products-table-wrapper" *ngIf="!loading">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Featured</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of products">
+            <td>{{ p.id }}</td>
+            <td class="product-name-cell">{{ p.name }}</td>
+            <td>{{ p.categoryName }}</td>
+            <td>₹{{ p.price | number:'1.0-0' }}</td>
+            <td>
+              <span [class.low-stock]="p.stockQuantity < 5">{{ p.stockQuantity }}</span>
+            </td>
+            <td>
+              <i class="bi" [ngClass]="p.featured ? 'bi-star-fill text-featured' : 'bi-star text-muted'"></i>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-action edit" (click)="openEditModal(p)" aria-label="Edit">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn-action delete" (click)="deleteProduct(p.id)" aria-label="Delete">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="products.length === 0">
+            <td colspan="7" class="empty-row">No products found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ editingProduct ? 'Edit Product' : 'Add Product' }}</h2>
+      <button class="btn-close-modal" (click)="closeModal()">&times;</button>
+    </div>
+
+    <div class="modal-error" *ngIf="errorMessage">
+      <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+      <div class="form-grid">
+        <div class="form-field full">
+          <label class="form-label">NAME *</label>
+          <input type="text" formControlName="name" class="form-input" id="product-name-input">
+        </div>
+        <div class="form-field full">
+          <label class="form-label">DESCRIPTION</label>
+          <textarea formControlName="description" class="form-textarea" rows="3" id="product-desc-input"></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label">PRICE *</label>
+          <input type="number" formControlName="price" class="form-input" id="product-price-input">
+        </div>
+        <div class="form-field">
+          <label class="form-label">STOCK QUANTITY *</label>
+          <input type="number" formControlName="stockQuantity" class="form-input" id="product-stock-input">
+        </div>
+        <div class="form-field full">
+          <label class="form-label">IMAGE URL</label>
+          <input type="text" formControlName="imageUrl" class="form-input" id="product-image-input">
+        </div>
+        <div class="form-field">
+          <label class="form-label">CATEGORY *</label>
+          <select formControlName="categoryId" class="form-input" id="product-category-input">
+            <option [ngValue]="null" disabled>Select category</option>
+            <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">FEATURED</label>
+          <label class="toggle-label">
+            <input type="checkbox" formControlName="featured" id="product-featured-input">
+            <span>Mark as featured</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="closeModal()">CANCEL</button>
+        <button type="submit" class="btn-save" [disabled]="productForm.invalid || saving" id="product-save-btn">
+          {{ saving ? 'SAVING...' : (editingProduct ? 'UPDATE' : 'CREATE') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

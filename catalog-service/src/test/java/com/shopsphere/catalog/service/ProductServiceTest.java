@@ -1,5 +1,6 @@
 package com.shopsphere.catalog.service;
 
+import com.shopsphere.catalog.dto.ProductPageResponse;
 import com.shopsphere.catalog.dto.ProductRequest;
 import com.shopsphere.catalog.dto.ProductResponse;
 import com.shopsphere.catalog.model.Category;
@@ -22,7 +23,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,10 +43,16 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         category = Category.builder().id(1L).name("Electronics").build();
+
         product = Product.builder()
-                .id(1L).name("Laptop").description("Gaming laptop")
-                .price(BigDecimal.valueOf(999.99)).stockQuantity(10)
-                .featured(true).category(category).build();
+                .id(1L)
+                .name("Laptop")
+                .description("Gaming laptop")
+                .price(BigDecimal.valueOf(999.99))
+                .stockQuantity(10)
+                .featured(true)
+                .category(category)
+                .build();
     }
 
     @Test
@@ -54,10 +60,11 @@ class ProductServiceTest {
         Page<Product> page = new PageImpl<>(List.of(product));
         when(productRepository.searchProducts(any(), any(), any(Pageable.class))).thenReturn(page);
 
-        Page<ProductResponse> result = productService.getProducts(null, null, 0, 10, "id", "asc");
+        ProductPageResponse result = productService.getProducts(null, null, 0, 10, "id", "asc");
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getContent().size());
         assertEquals("Laptop", result.getContent().get(0).getName());
     }
 
@@ -90,8 +97,15 @@ class ProductServiceTest {
 
     @Test
     void createProduct_ShouldSaveAndReturn() {
-        ProductRequest request = new ProductRequest("Phone", "Smartphone",
-                BigDecimal.valueOf(599.99), 20, null, false, 1L);
+        ProductRequest request = new ProductRequest(
+                "Phone",
+                "Smartphone",
+                BigDecimal.valueOf(599.99),
+                20,
+                null,
+                false,
+                1L
+        );
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(productRepository.save(any(Product.class))).thenReturn(product);

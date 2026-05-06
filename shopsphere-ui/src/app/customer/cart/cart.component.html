@@ -1,0 +1,63 @@
+<div class="cart-page">
+  <div class="cart-inner">
+    <span class="page-label">YOUR CART</span>
+    <h1 class="page-title">Shopping bag</h1>
+
+    <app-loading-spinner [show]="loading"></app-loading-spinner>
+
+    <div *ngIf="!loading && cart && cart.items.length > 0">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of cart.items" [class.updating]="updatingItemId === item.id">
+            <td class="cart-product">
+              <a [routerLink]="['/customer/product', item.productId]" class="cart-product-name">
+                {{ item.productName }}
+              </a>
+            </td>
+            <td>₹{{ item.price | number:'1.0-0' }}</td>
+            <td>
+              <div class="qty-control">
+                <button class="qty-btn" (click)="updateQuantity(item.id, item.quantity - 1)" [disabled]="item.quantity <= 1">−</button>
+                <span class="qty-value">{{ item.quantity }}</span>
+                <button class="qty-btn" (click)="updateQuantity(item.id, item.quantity + 1)">+</button>
+              </div>
+            </td>
+            <td class="cart-subtotal">₹{{ item.subtotal | number:'1.0-0' }}</td>
+            <td>
+              <button class="btn-remove" (click)="removeItem(item.id)" aria-label="Remove item">
+                <i class="bi bi-x"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="cart-summary">
+        <div class="cart-total">
+          <span class="total-label">Total</span>
+          <span class="total-value">₹{{ cart.totalAmount | number:'1.0-0' }}</span>
+        </div>
+        <p class="cart-note">Shipping and taxes calculated at checkout.</p>
+        <a routerLink="/customer/checkout" class="btn-checkout" id="checkout-btn">
+          PROCEED TO CHECKOUT <i class="bi bi-arrow-right"></i>
+        </a>
+        <a routerLink="/customer/products" class="link-continue">← Continue shopping</a>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && (!cart || cart.items.length === 0)" class="empty-cart">
+      <i class="bi bi-bag"></i>
+      <p>Your bag is empty</p>
+      <a routerLink="/customer/products" class="btn-shop">START SHOPPING <i class="bi bi-arrow-right"></i></a>
+    </div>
+  </div>
+</div>

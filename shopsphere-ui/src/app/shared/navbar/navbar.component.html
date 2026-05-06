@@ -1,0 +1,38 @@
+<nav class="navbar-main">
+  <div class="navbar-inner">
+    <!-- Logo -->
+    <a routerLink="/customer/home" class="navbar-logo">ShopSphere<span class="logo-dot">.</span></a>
+
+    <!-- Center links -->
+    <div class="navbar-links">
+      <a routerLink="/customer/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/customer/products" routerLinkActive="active">Shop</a>
+      <a *ngIf="authService.isAdmin()" routerLink="/admin/dashboard" routerLinkActive="active">Admin</a>
+    </div>
+
+    <!-- Right actions -->
+    <div class="navbar-actions">
+      <button class="btn-icon" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+        <i class="bi" [ngClass]="isDark ? 'bi-sun' : 'bi-moon'"></i>
+      </button>
+
+      <!-- Logged-in state -->
+      <ng-container *ngIf="authService.isLoggedIn(); else guestActions">
+        <a *ngIf="authService.isCustomer()" routerLink="/customer/cart" class="btn-icon" aria-label="Cart">
+          <i class="bi bi-bag"></i>
+        </a>
+        <a *ngIf="authService.isCustomer()" routerLink="/customer/orders" class="btn-icon" aria-label="Orders">
+          <i class="bi bi-box-seam"></i>
+        </a>
+        <span class="navbar-user-name">{{ authService.getUserName() }}</span>
+        <button class="btn-sign-in" (click)="logout()">SIGN OUT</button>
+      </ng-container>
+
+      <!-- Guest state -->
+      <ng-template #guestActions>
+        <a routerLink="/auth/login" class="btn-sign-in">SIGN IN</a>
+        <a routerLink="/auth/signup" class="btn-create-account">CREATE ACCOUNT</a>
+      </ng-template>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,61 @@
+<div class="detail-page">
+  <app-loading-spinner [show]="loading"></app-loading-spinner>
+
+  <div class="detail-inner" *ngIf="!loading && product">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/customer/products">All products</a>
+      <i class="bi bi-chevron-right"></i>
+      <span>{{ product.name }}</span>
+    </nav>
+
+    <div class="detail-grid">
+      <!-- Product Image -->
+      <div class="detail-image">
+        <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name">
+        <div *ngIf="!product.imageUrl" class="detail-placeholder">
+          <i class="bi bi-image"></i>
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="detail-info">
+        <span class="detail-category">{{ product.categoryName }}</span>
+        <h1 class="detail-name">{{ product.name }}</h1>
+        <p class="detail-price">₹{{ product.price | number:'1.0-0' }}</p>
+        <p class="detail-description">{{ product.description }}</p>
+
+        <div class="detail-stock" [class.out-of-stock]="product.stockQuantity === 0">
+          <i class="bi" [ngClass]="product.stockQuantity > 0 ? 'bi-check-circle' : 'bi-x-circle'"></i>
+          <span *ngIf="product.stockQuantity > 0">{{ product.stockQuantity }} in stock</span>
+          <span *ngIf="product.stockQuantity === 0">Out of stock</span>
+        </div>
+
+        <!-- Quantity + Add to Cart -->
+        <div class="detail-actions" *ngIf="product.stockQuantity > 0">
+          <div class="qty-control">
+            <button (click)="decrementQty()" [disabled]="quantity <= 1" class="qty-btn">−</button>
+            <span class="qty-value">{{ quantity }}</span>
+            <button (click)="incrementQty()" [disabled]="quantity >= product.stockQuantity" class="qty-btn">+</button>
+          </div>
+          <button class="btn-add-cart" (click)="addToCart()" [disabled]="addingToCart" id="add-to-cart">
+            <span *ngIf="!addingToCart">ADD TO CART</span>
+            <span *ngIf="addingToCart">ADDING...</span>
+          </button>
+        </div>
+
+        <div class="added-message" *ngIf="addedMessage">
+          <i class="bi bi-check-circle"></i> {{ addedMessage }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-inner" *ngIf="!loading && !product">
+    <div class="not-found">
+      <i class="bi bi-exclamation-triangle"></i>
+      <p>Product not found.</p>
+      <a routerLink="/customer/products" class="btn-back">← Back to products</a>
+    </div>
+  </div>
+</div>

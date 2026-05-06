@@ -1,0 +1,81 @@
+<div class="admin-page">
+  <div class="admin-inner">
+    <div class="admin-header">
+      <div>
+        <span class="admin-label">ADMIN PANEL</span>
+        <h1 class="admin-title">Reports</h1>
+      </div>
+      <nav class="admin-nav">
+        <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/admin/products" routerLinkActive="active">Products</a>
+        <a routerLink="/admin/categories" routerLinkActive="active">Categories</a>
+        <a routerLink="/admin/orders" routerLinkActive="active">Orders</a>
+        <a routerLink="/admin/reports" routerLinkActive="active">Reports</a>
+      </nav>
+    </div>
+
+    <app-loading-spinner [show]="loading"></app-loading-spinner>
+
+    <div *ngIf="!loading && report" class="reports-content">
+      <!-- Summary Cards -->
+      <div class="report-cards">
+        <div class="report-card">
+          <h4 class="card-heading">TOTAL PRODUCTS</h4>
+          <p class="card-value">{{ report.totalProducts }}</p>
+          <p class="card-desc">Products in the catalog</p>
+        </div>
+        <div class="report-card">
+          <h4 class="card-heading">TOTAL ORDERS</h4>
+          <p class="card-value">{{ report.totalOrders }}</p>
+          <p class="card-desc">Orders processed to date</p>
+        </div>
+      </div>
+
+      <!-- Order Breakdown -->
+      <div class="breakdown-section">
+        <h3 class="section-heading">Order Breakdown</h3>
+        <div class="breakdown-grid">
+          <div class="breakdown-item">
+            <div class="breakdown-bar-wrapper">
+              <div class="breakdown-bar pending" [style.width.%]="report.totalOrders > 0 ? (report.pendingOrders / report.totalOrders * 100) : 0"></div>
+            </div>
+            <div class="breakdown-info">
+              <span class="breakdown-label">Pending</span>
+              <span class="breakdown-count">{{ report.pendingOrders }}</span>
+            </div>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-bar-wrapper">
+              <div class="breakdown-bar delivered" [style.width.%]="report.totalOrders > 0 ? (report.deliveredOrders / report.totalOrders * 100) : 0"></div>
+            </div>
+            <div class="breakdown-info">
+              <span class="breakdown-label">Delivered</span>
+              <span class="breakdown-count">{{ report.deliveredOrders }}</span>
+            </div>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-bar-wrapper">
+              <div class="breakdown-bar cancelled" [style.width.%]="report.totalOrders > 0 ? (report.cancelledOrders / report.totalOrders * 100) : 0"></div>
+            </div>
+            <div class="breakdown-info">
+              <span class="breakdown-label">Cancelled</span>
+              <span class="breakdown-count">{{ report.cancelledOrders }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rates -->
+      <div class="rates-grid">
+        <div class="rate-card">
+          <div class="rate-value">{{ getOrderFulfillmentRate() }}%</div>
+          <div class="rate-label">Fulfillment Rate</div>
+        </div>
+        <div class="rate-card">
+          <div class="rate-value danger">{{ getCancellationRate() }}%</div>
+          <div class="rate-label">Cancellation Rate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

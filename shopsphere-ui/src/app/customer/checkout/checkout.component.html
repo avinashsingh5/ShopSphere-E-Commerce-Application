@@ -1,0 +1,149 @@
+<div class="checkout-page">
+  <div class="checkout-inner">
+    <span class="page-label">CHECKOUT</span>
+    <h1 class="page-title">Complete your order</h1>
+
+    <!-- Stepper -->
+    <div class="stepper">
+      <div class="step" [class.active]="currentStep >= 1" [class.done]="currentStep > 1">
+        <span class="step-num">1</span><span class="step-text">Address</span>
+      </div>
+      <div class="step-line" [class.active]="currentStep > 1"></div>
+      <div class="step" [class.active]="currentStep >= 2" [class.done]="currentStep > 2">
+        <span class="step-num">2</span><span class="step-text">Payment</span>
+      </div>
+      <div class="step-line" [class.active]="currentStep > 2"></div>
+      <div class="step" [class.active]="currentStep >= 3" [class.done]="currentStep > 3">
+        <span class="step-num">3</span><span class="step-text">Review</span>
+      </div>
+      <div class="step-line" [class.active]="currentStep > 3"></div>
+      <div class="step" [class.active]="currentStep >= 4">
+        <span class="step-num">4</span><span class="step-text">Done</span>
+      </div>
+    </div>
+
+    <div class="checkout-error" *ngIf="errorMessage">
+      <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <!-- Step 1: Shipping Address -->
+    <div class="checkout-step" *ngIf="currentStep === 1">
+      <h2 class="step-title">Shipping address</h2>
+      <form [formGroup]="addressForm" (ngSubmit)="submitAddress()">
+        <div class="form-field">
+          <label class="form-label">FULL ADDRESS</label>
+          <textarea
+            formControlName="shippingAddress"
+            class="form-textarea"
+            rows="4"
+            placeholder="House no., Street, City, State, Pincode"
+            id="shipping-address"
+          ></textarea>
+          <div class="form-error" *ngIf="addressForm.get('shippingAddress')?.touched && addressForm.get('shippingAddress')?.errors?.['required']">
+            Address is required
+          </div>
+          <div class="form-error" *ngIf="addressForm.get('shippingAddress')?.touched && addressForm.get('shippingAddress')?.errors?.['minlength']">
+            Please provide a complete address (at least 10 characters)
+          </div>
+        </div>
+        <button type="submit" class="btn-next" [disabled]="addressForm.invalid || loading" id="checkout-next-1">
+          {{ loading ? 'PROCESSING...' : 'CONTINUE TO PAYMENT' }} <i class="bi bi-arrow-right" *ngIf="!loading"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Step 2: Payment -->
+    <div class="checkout-step" *ngIf="currentStep === 2">
+      <h2 class="step-title">Payment method</h2>
+      <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
+        <div class="payment-options">
+          <label class="payment-option" [class.selected]="paymentForm.get('paymentMode')?.value === 'CARD'">
+            <input type="radio" formControlName="paymentMode" value="CARD">
+            <i class="bi bi-credit-card"></i>
+            <div>
+              <strong>Card</strong>
+              <span>Debit / Credit card</span>
+            </div>
+          </label>
+          <label class="payment-option" [class.selected]="paymentForm.get('paymentMode')?.value === 'UPI'">
+            <input type="radio" formControlName="paymentMode" value="UPI">
+            <i class="bi bi-phone"></i>
+            <div>
+              <strong>UPI</strong>
+              <span>Google Pay, PhonePe, etc.</span>
+            </div>
+          </label>
+          <label class="payment-option" [class.selected]="paymentForm.get('paymentMode')?.value === 'COD'">
+            <input type="radio" formControlName="paymentMode" value="COD">
+            <i class="bi bi-cash-stack"></i>
+            <div>
+              <strong>Cash on Delivery</strong>
+              <span>Pay when you receive</span>
+            </div>
+          </label>
+        </div>
+        <button type="submit" class="btn-next" [disabled]="paymentForm.invalid || loading" id="checkout-next-2">
+          {{ loading ? 'PROCESSING...' : 'REVIEW ORDER' }} <i class="bi bi-arrow-right" *ngIf="!loading"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Step 3: Review -->
+    <div class="checkout-step" *ngIf="currentStep === 3 && order">
+      <h2 class="step-title">Review your order</h2>
+
+      <div class="review-section">
+        <h4 class="review-label">SHIPPING ADDRESS</h4>
+        <p class="review-value">{{ order.shippingAddress }}</p>
+      </div>
+
+      <div class="review-section">
+        <h4 class="review-label">PAYMENT METHOD</h4>
+        <p class="review-value">{{ order.paymentMode }}</p>
+      </div>
+
+      <div class="review-section">
+        <h4 class="review-label">ORDER ITEMS</h4>
+        <div class="review-item" *ngFor="let item of order.items">
+          <span>{{ item.productName }} × {{ item.quantity }}</span>
+          <span>₹{{ item.subtotal | number:'1.0-0' }}</span>
+        </div>
+      </div>
+
+      <div class="review-total">
+        <span>Total</span>
+        <span>₹{{ order.totalAmount | number:'1.0-0' }}</span>
+      </div>
+
+      <button class="btn-next btn-place" (click)="placeOrder()" [disabled]="loading" id="place-order-btn">
+        {{ loading ? 'PLACING ORDER...' : 'PLACE ORDER' }}
+      </button>
+    </div>
+
+    <!-- Step 4: Confirmation -->
+    <div class="checkout-step confirmation" *ngIf="currentStep === 4 && order">
+      <div class="confirm-icon">
+        <i class="bi bi-check-circle-fill"></i>
+      </div>
+      <h2 class="confirm-title">Order placed!</h2>
+      <p class="confirm-subtitle">Thank you for your order. Your order #{{ order.id }} has been placed successfully.</p>
+
+      <div class="confirm-details">
+        <div class="confirm-row">
+          <span>Order ID</span><span>#{{ order.id }}</span>
+        </div>
+        <div class="confirm-row">
+          <span>Status</span><span class="status-badge">{{ order.status }}</span>
+        </div>
+        <div class="confirm-row">
+          <span>Total</span><span>₹{{ order.totalAmount | number:'1.0-0' }}</span>
+        </div>
+      </div>
+
+      <div class="confirm-actions">
+        <a routerLink="/customer/orders" class="btn-next">VIEW MY ORDERS</a>
+        <a routerLink="/customer/products" class="link-continue">Continue shopping</a>
+      </div>
+    </div>
+  </div>
+</div>

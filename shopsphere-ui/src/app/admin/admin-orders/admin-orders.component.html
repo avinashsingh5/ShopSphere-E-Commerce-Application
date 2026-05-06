@@ -1,0 +1,65 @@
+<div class="admin-page">
+  <div class="admin-inner">
+    <div class="admin-header">
+      <div>
+        <span class="admin-label">ADMIN PANEL</span>
+        <h1 class="admin-title">Orders</h1>
+      </div>
+      <nav class="admin-nav">
+        <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/admin/products" routerLinkActive="active">Products</a>
+        <a routerLink="/admin/categories" routerLinkActive="active">Categories</a>
+        <a routerLink="/admin/orders" routerLinkActive="active">Orders</a>
+        <a routerLink="/admin/reports" routerLinkActive="active">Reports</a>
+      </nav>
+    </div>
+
+    <div class="success-toast" *ngIf="successMessage">
+      <i class="bi bi-check-circle"></i> {{ successMessage }}
+    </div>
+
+    <app-loading-spinner [show]="loading"></app-loading-spinner>
+
+    <div class="table-wrapper" *ngIf="!loading">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Payment</th>
+            <th>Date</th>
+            <th>Update Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders" [class.updating]="updatingOrderId === order.id">
+            <td>#{{ order.id }}</td>
+            <td>{{ order.userId }}</td>
+            <td>₹{{ order.totalAmount | number:'1.0-0' }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(order.status)">{{ order.status }}</span>
+            </td>
+            <td>{{ order.paymentMode || '—' }}</td>
+            <td>{{ order.createdAt | date:'short' }}</td>
+            <td>
+              <select
+                class="status-select"
+                (change)="updateStatus(order.id, $any($event.target).value)"
+                [disabled]="updatingOrderId === order.id"
+                id="order-status-{{ order.id }}"
+              >
+                <option value="" disabled selected>Change...</option>
+                <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+              </select>
+            </td>
+          </tr>
+          <tr *ngIf="orders.length === 0">
+            <td colspan="7" class="empty-row">No orders found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

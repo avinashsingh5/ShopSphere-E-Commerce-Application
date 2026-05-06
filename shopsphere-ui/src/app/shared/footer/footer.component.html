@@ -1,0 +1,32 @@
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a routerLink="/customer/home" class="footer-logo">ShopSphere<span class="logo-dot">.</span></a>
+        <p class="footer-tagline">Considered objects for everyday life. Made well, sold honestly, shipped from our warehouse to your door.</p>
+      </div>
+
+      <!-- Shop links -->
+      <div class="footer-col">
+        <h4 class="footer-heading">SHOP</h4>
+        <a routerLink="/customer/products">All products</a>
+        <a routerLink="/customer/products" [queryParams]="{ sortBy: 'id', sortDir: 'desc' }">New arrivals</a>
+        <a routerLink="/customer/home" fragment="featured">Featured</a>
+      </div>
+
+      <!-- Account links -->
+      <div class="footer-col">
+        <h4 class="footer-heading">ACCOUNT</h4>
+        <a routerLink="/auth/login">Sign in</a>
+        <a routerLink="/auth/signup">Create account</a>
+        <a routerLink="/customer/orders">My orders</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; {{ currentYear }} ShopSphere. All rights reserved.</span>
+      <span class="footer-credit">MADE WITH CARE</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,36 @@
+.admin-page { background: var(--bg-secondary); min-height: 80vh; padding: 2rem; }
+.admin-inner { max-width: 1200px; margin: 0 auto; }
+.admin-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem; }
+.admin-label { font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.18em; color: var(--text-muted); display: block; margin-bottom: 0.5rem; }
+.admin-title { font-family: var(--font-heading); font-size: 2rem; font-weight: 400; color: var(--text-primary); }
+.admin-nav { display: flex; gap: 1.5rem; }
+.admin-nav a { font-family: var(--font-body); font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; padding: 0.4rem 0; border-bottom: 2px solid transparent; transition: all 0.2s; }
+.admin-nav a:hover, .admin-nav a.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+
+.report-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+.report-card { background: var(--bg-primary); border: 1px solid var(--border-color); padding: 2rem; }
+.card-heading { font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 0.75rem; }
+.card-value { font-family: var(--font-heading); font-size: 3rem; color: var(--text-primary); margin-bottom: 0.25rem; }
+.card-desc { font-family: var(--font-body); font-size: 0.85rem; color: var(--text-secondary); }
+
+.section-heading { font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 1.5rem; }
+.breakdown-grid { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 3rem; }
+.breakdown-item { background: var(--bg-primary); border: 1px solid var(--border-color); padding: 1.25rem; }
+.breakdown-bar-wrapper { height: 8px; background: var(--border-color); border-radius: 4px; margin-bottom: 0.75rem; overflow: hidden; }
+.breakdown-bar { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+.breakdown-bar.pending { background: #d97706; }
+.breakdown-bar.delivered { background: #16a34a; }
+.breakdown-bar.cancelled { background: #dc2626; }
+.breakdown-info { display: flex; justify-content: space-between; }
+.breakdown-label { font-family: var(--font-body); font-size: 0.9rem; color: var(--text-primary); }
+.breakdown-count { font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+
+.rates-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.rate-card { background: var(--bg-primary); border: 1px solid var(--border-color); padding: 2rem; text-align: center; }
+.rate-value { font-family: var(--font-heading); font-size: 2.5rem; color: #16a34a; margin-bottom: 0.5rem; }
+.rate-value.danger { color: #dc2626; }
+.rate-label { font-family: var(--font-body); font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1em; }
+
+@media (max-width: 768px) {
+  .report-cards, .rates-grid { grid-template-columns: 1fr; }
+}

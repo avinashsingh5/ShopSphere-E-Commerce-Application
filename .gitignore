@@ -1,8 +1,15 @@
 HELP.md
+
+### Maven / Spring Boot ###
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### Java build ###
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 ### STS ###
 .apt_generated
@@ -14,7 +21,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -25,24 +32,41 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
-.DS_Store
-
-### Others ###
+### Logs ###
 *.log
-*.sql
-*.sqlite
-.env
 hs_err_pid*.log
 
-### Node (if frontend present) ###
+### Environment / Secrets ###
+.env
+.env.*
+!.env.example
+
+### Database files ###
+*.sql
+*.sqlite
+*.db
+
+### Docker / OS ###
+.DS_Store
+
+### Angular / Node Frontend ###
 node_modules/
 dist/
 build/
+.angular/
+.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+### Angular frontend inside shopsphere-ui ###
+shopsphere-ui/node_modules/
+shopsphere-ui/dist/
+shopsphere-ui/.angular/
+shopsphere-ui/.cache/
+shopsphere-ui/.vscode/

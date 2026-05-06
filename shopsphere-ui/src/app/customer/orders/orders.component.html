@@ -1,0 +1,48 @@
+<div class="orders-page">
+  <div class="orders-inner">
+    <span class="page-label">YOUR ORDERS</span>
+    <h1 class="page-title">Order history</h1>
+
+    <app-loading-spinner [show]="loading"></app-loading-spinner>
+
+    <div *ngIf="!loading && orders.length > 0" class="orders-list">
+      <div class="order-card" *ngFor="let order of orders" [class.expanded]="expandedOrderId === order.id">
+        <div class="order-header" (click)="toggleExpand(order.id)">
+          <div class="order-meta">
+            <span class="order-id">#{{ order.id }}</span>
+            <span class="order-date">{{ order.createdAt | date:'mediumDate' }}</span>
+          </div>
+          <div class="order-summary-row">
+            <span class="order-status" [ngClass]="getStatusClass(order.status)">{{ order.status }}</span>
+            <span class="order-total">₹{{ order.totalAmount | number:'1.0-0' }}</span>
+            <i class="bi" [ngClass]="expandedOrderId === order.id ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+          </div>
+        </div>
+
+        <div class="order-details" *ngIf="expandedOrderId === order.id">
+          <div class="detail-row">
+            <span class="detail-label">Shipping Address</span>
+            <span class="detail-value">{{ order.shippingAddress }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Payment</span>
+            <span class="detail-value">{{ order.paymentMode }}</span>
+          </div>
+          <div class="order-items-list">
+            <h4 class="items-heading">ITEMS</h4>
+            <div class="order-item" *ngFor="let item of order.items">
+              <span class="item-name">{{ item.productName }} × {{ item.quantity }}</span>
+              <span class="item-price">₹{{ item.subtotal | number:'1.0-0' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && orders.length === 0" class="empty-orders">
+      <i class="bi bi-box-seam"></i>
+      <p>No orders yet</p>
+      <a routerLink="/customer/products" class="btn-shop">START SHOPPING <i class="bi bi-arrow-right"></i></a>
+    </div>
+  </div>
+</div>

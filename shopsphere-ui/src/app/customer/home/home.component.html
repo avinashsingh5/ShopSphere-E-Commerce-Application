@@ -1,0 +1,74 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <span class="hero-label">SPRING EDIT · VOLUME 04</span>
+      <h1 class="hero-title">
+        Considered<br>objects,<br>
+        <em class="hero-italic">made to last.</em>
+      </h1>
+      <p class="hero-subtitle">A small catalogue of useful, beautiful things. Designed in-house, produced in limited runs, delivered without fuss.</p>
+      <a routerLink="/customer/products" class="btn-hero">
+        SHOP THE COLLECTION <i class="bi bi-arrow-right"></i>
+      </a>
+      <br>
+      <a *ngIf="!authService.isLoggedIn()" routerLink="/auth/signup" class="link-underline">
+        BECOME A MEMBER
+      </a>
+    </div>
+    <div class="hero-image">
+      <div class="hero-image-placeholder">
+        <img
+          src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80"
+          alt="ShopSphere collection"
+          class="hero-main-img"
+        />
+      </div>
+      <div class="hero-card">
+        <span class="hero-card-label">ISSUE 04</span>
+        <h3 class="hero-card-title">The quiet luxury of everyday wear.</h3>
+        <a routerLink="/customer/products" class="hero-card-link">READ MORE <i class="bi bi-arrow-up-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-section" id="featured">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-label">CURATED FOR YOU</span>
+      <h2 class="section-title">Featured products</h2>
+    </div>
+
+    <app-loading-spinner [show]="loading" message="Loading featured products..."></app-loading-spinner>
+
+    <div class="products-grid" *ngIf="!loading">
+      <div class="product-card" *ngFor="let product of featuredProducts">
+        <a [routerLink]="['/customer/product', product.id]" class="product-card-link">
+          <div class="product-card-image">
+            <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" loading="lazy">
+            <div *ngIf="!product.imageUrl" class="product-placeholder">
+              <i class="bi bi-image"></i>
+            </div>
+            <span class="product-badge" *ngIf="product.featured">FEATURED</span>
+          </div>
+          <div class="product-card-info">
+            <span class="product-category">{{ product.categoryName }}</span>
+            <h3 class="product-name">{{ product.name }}</h3>
+            <span class="product-price">₹{{ product.price | number:'1.0-0' }}</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="no-products" *ngIf="featuredProducts.length === 0">
+        <i class="bi bi-stars"></i>
+        <p>No featured products yet. Check back soon!</p>
+      </div>
+    </div>
+
+    <div class="section-cta" *ngIf="!loading && featuredProducts.length > 0">
+      <a routerLink="/customer/products" class="btn-outline">VIEW ALL PRODUCTS <i class="bi bi-arrow-right"></i></a>
+    </div>
+  </div>
+</section>

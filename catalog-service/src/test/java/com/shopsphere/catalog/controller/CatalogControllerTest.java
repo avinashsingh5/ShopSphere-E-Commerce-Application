@@ -1,6 +1,7 @@
 package com.shopsphere.catalog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shopsphere.catalog.dto.ProductPageResponse;
 import com.shopsphere.catalog.dto.ProductRequest;
 import com.shopsphere.catalog.dto.ProductResponse;
 import com.shopsphere.catalog.service.CategoryService;
@@ -11,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,9 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,19 +47,37 @@ class CatalogControllerTest {
 
     private ProductResponse sampleProduct() {
         return ProductResponse.builder()
-                .id(1L).name("Laptop").description("Gaming laptop")
-                .price(BigDecimal.valueOf(999.99)).stockQuantity(10)
-                .featured(true).categoryId(1L).categoryName("Electronics").build();
+                .id(1L)
+                .name("Laptop")
+                .description("Gaming laptop")
+                .price(BigDecimal.valueOf(999.99))
+                .stockQuantity(10)
+                .featured(true)
+                .categoryId(1L)
+                .categoryName("Electronics")
+                .build();
     }
 
     @Test
     void getProducts_ShouldReturn200() throws Exception {
-        Page<ProductResponse> page = new PageImpl<>(List.of(sampleProduct()), org.springframework.data.domain.PageRequest.of(0, 10), 1);
+        ProductPageResponse pageResponse = ProductPageResponse.builder()
+                .content(List.of(sampleProduct()))
+                .page(0)
+                .size(10)
+                .totalElements(1)
+                .totalPages(1)
+                .first(true)
+                .last(true)
+                .numberOfElements(1)
+                .build();
+
         when(productService.getProducts(any(), any(), anyInt(), anyInt(), anyString(), anyString()))
-                .thenReturn(page);
+                .thenReturn(pageResponse);
 
         mockMvc.perform(get("/catalog/products"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value("Laptop"))
+                .andExpect(jsonPath("$.totalElements").value(1));
     }
 
     @Test
@@ -85,8 +100,16 @@ class CatalogControllerTest {
 
     @Test
     void createProduct_ShouldReturn201() throws Exception {
-        ProductRequest request = new ProductRequest("Phone", "Smartphone",
-                BigDecimal.valueOf(599.99), 20, null, false, 1L);
+        ProductRequest request = new ProductRequest(
+                "Phone",
+                "Smartphone",
+                BigDecimal.valueOf(599.99),
+                20,
+                null,
+                false,
+                1L
+        );
+
         when(productService.createProduct(any())).thenReturn(sampleProduct());
 
         mockMvc.perform(post("/catalog/products")

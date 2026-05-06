@@ -1,0 +1,70 @@
+<div class="auth-page">
+  <!-- Left panel — decorative -->
+  <div class="auth-hero">
+    <div class="auth-hero-overlay"></div>
+    <div class="auth-hero-content">
+      <span class="auth-hero-label">WELCOME BACK</span>
+      <h2 class="auth-hero-title">Pick up where<br>you left off.</h2>
+    </div>
+  </div>
+
+  <!-- Right panel — form -->
+  <div class="auth-form-panel">
+    <div class="auth-form-wrapper">
+      <span class="auth-form-label">SIGN IN</span>
+      <h1 class="auth-form-title">Welcome back</h1>
+      <p class="auth-form-subtitle">Sign in to access your account and orders.</p>
+
+      <div class="auth-error" *ngIf="errorMessage">
+        <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+          <label class="form-label">EMAIL</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="form-input"
+            placeholder="you@example.com"
+            id="login-email"
+          />
+          <div class="form-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']">
+            Email is required
+          </div>
+          <div class="form-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']">
+            Please enter a valid email
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">PASSWORD</label>
+          <input
+            type="password"
+            formControlName="password"
+            class="form-input"
+            placeholder="Your password"
+            id="login-password"
+          />
+          <div class="form-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']">
+            Password is required
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="loginForm.invalid || loading"
+          id="login-submit"
+        >
+          <span *ngIf="!loading">SIGN IN</span>
+          <span *ngIf="loading">SIGNING IN...</span>
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account? <a routerLink="/auth/signup">Create account</a>
+      </p>
+    </div>
+  </div>
+</div>

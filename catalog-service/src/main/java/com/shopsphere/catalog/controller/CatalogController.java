@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import com.shopsphere.catalog.dto.ProductPageResponse;
 import java.util.List;
 
 @RestController
@@ -31,7 +31,7 @@ public class CatalogController {
 
     @GetMapping("/products")
     @Operation(summary = "Search and list products with pagination")
-    public ResponseEntity<Page<ProductResponse>> getProducts(
+    public ResponseEntity<ProductPageResponse> getProducts(
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "categoryId", required = false) Long categoryId,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -44,6 +44,7 @@ public class CatalogController {
     @GetMapping("/featured")
     @Operation(summary = "Get featured products")
     public ResponseEntity<List<ProductResponse>> getFeaturedProducts() {
+        System.out.println("🚀 CONTROLLER HIT: /catalog/featured");
         return ResponseEntity.ok(productService.getFeaturedProducts());
     }
 
